@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gazpacho Monster</title>
+<style>
+  :root { --bg: #000; --fg: #9e9e9e; --muted: #555; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+  main { max-width: 960px; margin: 0 auto; padding: 16px; box-sizing: border-box; }
+  .screen { position: relative; width: 100%; aspect-ratio: 16 / 9; }
+  canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+  .screen.crt::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.28) 2px 4px);
+  }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  button, label { background: #111; color: var(--fg); border: 1px solid #333; padding: 6px 10px; font: inherit; cursor: pointer; }
+  input[type=range] { flex: 1; min-width: 140px; accent-color: #e43b44; }
+  .time { color: var(--muted); min-width: 5ch; text-align: right; }
+</style>
+</head>
+<body>
+<main>
+  <div class="screen crt" id="screen"><canvas id="c" width="192" height="108"></canvas></div>
+  <div class="controls">
+    <button id="play">Pause</button>
+    <button id="restart">Restart</button>
+    <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Timeline">
+    <span class="time" id="time">0.0s</span>
+    <label><input type="checkbox" id="crt" checked> CRT</label>
+  </div>
+</main>
+<script src="anim.js"></script>
+<script>
+  const { W, H, DURATION, render } = GazpachoAnim;
+  const ctx = document.getElementById('c').getContext('2d');
+  const img = ctx.createImageData(W, H);
+  const playBtn = document.getElementById('play'), scrub = document.getElementById('scrub'), timeEl = document.getElementById('time');
+  let playing = true, t = 0, last = performance.now();
+
+  function draw() {
+    render(t, img.data);
+    ctx.putImageData(img, 0, 0);
+    scrub.value = Math.round((t / DURATION) * 1000);
+    timeEl.textContent = t.toFixed(1) + 's';
+  }
+  function frame(now) {
+    if (playing) t = (t + Math.min(0.1, (now - last) / 1000)) % DURATION;
+    last = now;
+    draw();
+    requestAnimationFrame(frame);
+  }
+  playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? 'Pause' : 'Play'; };
+  document.getElementById('restart').onclick = () => { t = 0; };
+  scrub.oninput = () => { t = (scrub.value / 1000) * DURATION * 0.9999; };
+  document.getElementById('crt').onchange = (e) => document.getElementById('screen').classList.toggle('crt', e.target.checked);
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>
