@@ -117,11 +117,9 @@ python3 "${SKILL_DIR}/scripts/watch.py" "<URL-or-local-path>" --question "<the u
 | `--whisper groq|openai|whisperx` | Select this run's fallback; captions still come first |
 | `--no-whisper` | Disable every speech fallback, including local; conflicts with `--whisper` |
 | `--sub-lang CODE` | Select one exact caption language; default `auto` prefers original-language evidence |
-| `--cookies FILE` | Explicit cookie jar; yt-dlp may update it |
-| `--cookies-from-browser BROWSER` | Explicit browser selector, including a profile if supplied; conflicts with `--cookies` |
 | `--out-dir DIR` | Create this run's disposable child directory inside DIR |
 
-Watch settings use CLI → environment → `~/.config/watch/.env` → defaults. Cookie options are opt-in and shared by metadata, caption, and media stages. If no watch cookie option is set, existing yt-dlp configuration remains active, including proxy/CA/auth settings. Do not inspect browser sessions automatically.
+Watch settings use CLI → environment → `~/.config/watch/.env` → defaults. **Cookies are disabled for this project.** Never use `--cookies` or `--cookies-from-browser`, never set `WATCH_COOKIES_FILE` or `WATCH_COOKIES_FROM_BROWSER`, and never read browser profiles, sessions, or cookie stores. The scripts always pass `--no-cookies --no-cookies-from-browser` to yt-dlp and refuse any cookie option. If a video needs a login, tell the user it cannot be watched and suggest a public video or a local file. Other yt-dlp configuration (proxy/CA) remains active.
 
 Read **every frame listed in the report** using the host's image-viewing tool; parallel reads are useful when supported. Frames are chronological and have actual source-relative timestamps. Cue frames retain their requested timestamp internally as well as the decoded frame's actual time. Combine visuals with the timestamped transcript to answer the question, citing relevant times. With no question, summarize structure, key moments, visuals, and speech. Even at transcript detail, summarize rather than paste the whole transcript unless requested.
 
@@ -157,7 +155,7 @@ For follow-ups, reuse evidence already viewed before rerunning. Remove only the 
 
 ## Security and runtime access
 
-- yt-dlp contacts the source service/CDNs for metadata, one selected caption track, and media; access may require explicitly configured authentication. A cookie file is a read/write jar.
+- yt-dlp contacts the source service/CDNs for metadata, one selected caption track, and media; cookies and browser logins are never used, so videos that require a login are unavailable.
 - With the Gemini engine, YouTube URLs are sent to Google and local or downloaded videos are uploaded to Google's Files API (generativelanguage.googleapis.com), then deleted after the answer; an upload that cannot be deleted expires within 48 hours. The key is sent only as a request header. The local engine never contacts Google.
 - FFmpeg/ffprobe run locally for probing, frames, and mono audio extraction.
 - With `whisperx` selected, audio never leaves the machine. First setup downloads packages and models from PyPI, Hugging Face, and GitHub, with uv/Python installers as needed. Pyannote telemetry is disabled. Warm caches allow offline inference; model libraries may still attempt cache/update network checks.

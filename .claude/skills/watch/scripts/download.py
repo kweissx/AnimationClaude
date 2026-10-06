@@ -27,13 +27,12 @@ def resolve_local(path: str) -> dict:
 
 
 def auth_args(cookies_file=None, cookies_from_browser=None) -> list[str]:
-    if cookies_file and cookies_from_browser:
-        raise SystemExit('Choose either --cookies or --cookies-from-browser, not both.')
-    if cookies_from_browser:
-        return ['--no-cookies', '--cookies-from-browser', cookies_from_browser]
-    if cookies_file:
-        return ['--no-cookies-from-browser', '--cookies', str(Path(cookies_file).expanduser().resolve())]
-    return []
+    # Local policy: cookies are disabled. Never read browser logins or cookie jars.
+    # The explicit --no-* flags also override any cookie setting in a yt-dlp config file.
+    if cookies_file or cookies_from_browser:
+        raise SystemExit('Cookies are disabled for this project; --cookies, --cookies-from-browser, '
+                         'WATCH_COOKIES_FILE and WATCH_COOKIES_FROM_BROWSER are not allowed.')
+    return ['--no-cookies', '--no-cookies-from-browser']
 
 
 def _common(directory: Path, auth: list[str]) -> list[str]:
@@ -51,7 +50,7 @@ def network_diagnostic(stderr: str) -> str:
     if any(s in lower for s in ('javascript runtime', 'js runtime', 'ejs', 'challenge solver')):
         hint = 'Update yt-dlp with its owning package manager and check Deno/EJS using setup.py --json.'
     elif any(s in lower for s in ('sign in', 'login required', 'authentication required', 'confirm you’re not a bot', "confirm you're not a bot")):
-        hint = 'This source requires authentication; supply an explicit cookie option if you have access.'
+        hint = 'This source requires a login; cookies are disabled for this project, so it cannot be watched. Use a public video or a local file.'
     elif '429' in lower or 'too many requests' in lower:
         hint = 'The service is rate limiting requests; wait before trying again.'
     elif re.search(r'\b403\b', lower) or 'forbidden' in lower:

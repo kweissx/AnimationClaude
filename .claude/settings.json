@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(*--cookies*)",
+      "Bash(*cookies-from-browser*)",
+      "Bash(*WATCH_COOKIES*)",
+      "Bash(*cookies.sqlite*)",
+      "Bash(*Login Data*)",
+      "Bash(*Cookies.binarycookies*)",
+
+      "Read(~/.config/google-chrome/**)",
+      "Read(~/.config/chromium/**)",
+      "Read(~/.config/BraveSoftware/**)",
+      "Read(~/.config/microsoft-edge/**)",
+      "Read(~/.config/vivaldi/**)",
+      "Read(~/.config/opera/**)",
+      "Read(~/.mozilla/**)",
+      "Read(~/snap/firefox/**)",
+      "Read(~/snap/chromium/**)",
+      "Read(~/.var/app/org.mozilla.firefox/**)",
+      "Read(~/.var/app/com.google.Chrome/**)",
+
+      "Read(~/Library/Application Support/Google/Chrome/**)",
+      "Read(~/Library/Application Support/Chromium/**)",
+      "Read(~/Library/Application Support/BraveSoftware/**)",
+      "Read(~/Library/Application Support/Microsoft Edge/**)",
+      "Read(~/Library/Application Support/Vivaldi/**)",
+      "Read(~/Library/Application Support/com.operasoftware.Opera/**)",
+      "Read(~/Library/Application Support/Arc/**)",
+      "Read(~/Library/Application Support/Firefox/**)",
+      "Read(~/Library/Safari/**)",
+      "Read(~/Library/Cookies/**)",
+      "Read(~/Library/Containers/com.apple.Safari/**)",
+      "Read(~/Library/Keychains/**)",
+
+      "Read(~/AppData/Local/Google/Chrome/**)",
+      "Read(~/AppData/Local/Chromium/**)",
+      "Read(~/AppData/Local/BraveSoftware/**)",
+      "Read(~/AppData/Local/Microsoft/Edge/**)",
+      "Read(~/AppData/Local/Vivaldi/**)",
+      "Read(~/AppData/Roaming/Opera Software/**)",
+      "Read(~/AppData/Roaming/Mozilla/**)"
+    ]
+  }
+}
